@@ -1,6 +1,7 @@
 var path = require('path')
 var webpack = require('webpack')
 var HtmlWebpackPlugin = require('html-webpack-plugin')
+var CopyWebpackPlugin = require('copy-webpack-plugin');
 var phaserModule = path.join(__dirname, '/node_modules/phaser/')
 var phaser = path.join(phaserModule, 'build/custom/phaser-split.js')
 var pixi = path.join(phaserModule, 'build/custom/pixi.js')
@@ -30,8 +31,14 @@ module.exports = {
         exclude: [/node_modules/],
         use: [{
           loader: 'babel-loader',
-          options: { presets: ['es2015'] }
+          options: {
+            presets: ['es2015']
+          }
         }]
+      },
+      {
+        test: /\.png$/,
+        loader: 'file-loader'
       }
     ]
   },
@@ -45,10 +52,18 @@ module.exports = {
   },
 
   plugins: [
-    new HtmlWebpackPlugin({
-      title: 'Fantasy Football Game',
-      template: 'index.ejs'
-    })
+    new CopyWebpackPlugin([
+      {
+        from: 'src/assets',
+        to: 'assets'
+      }
+    ]),
+    new HtmlWebpackPlugin(
+      {
+        title: 'Fantasy Football Game',
+        template: 'index.ejs'
+      }
+    )
   ]
 
 }
